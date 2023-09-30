@@ -2,12 +2,59 @@
 <html>
 <head>
     <title>Text Diffing Tool</title>
+    <!-- Include the diff-match-patch library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff-match-patch/1.0.0/diff_match_patch.js"></script>
 </head>
 <body>
     <h1>Text Diffing Tool</h1>
 
+    <div>
+        <label for="text1">Text 1:</label>
+        <textarea id="text1" placeholder="Enter the first text here"></textarea>
+    </div>
+
+    <div>
+        <label for="text2">Text 2:</label>
+        <textarea id="text2" placeholder="Enter the second text here"></textarea>
+    </div>
+
+    <button onclick="findDifferences()">Find Differences</button>
+
+    <div>
+        <h2>Differences:</h2>
+        <div id="differences"></div>
+    </div>
+
     <script>
-        console.log("v1");
+        console.log("v2")
+
+        function findDifferences() {
+            const text1 = document.getElementById('text1').value;
+            const text2 = document.getElementById('text2').value;
+            const differencesDiv = document.getElementById('differences');
+
+            // Create a new instance of the diff_match_patch library
+            const dmp = new diff_match_patch();
+
+            // Calculate the differences between the two texts
+            const diffs = dmp.diff_main(text1, text2);
+            dmp.diff_cleanupSemantic(diffs);
+
+            // Display the differences
+            differencesDiv.innerHTML = '';
+            for (const [op, text] of diffs) {
+                const span = document.createElement('span');
+                span.className = op === 0 ? 'no-change' : op === 1 ? 'added' : 'removed';
+                span.textContent = text;
+                differencesDiv.appendChild(span);
+            }
+        }
     </script>
+
+    <style>
+        /* Styling for highlighting differences */
+        .added { background-color: #c8f7c5; }
+        .removed { background-color: #ffdede; }
+    </style>
 </body>
 </html>
